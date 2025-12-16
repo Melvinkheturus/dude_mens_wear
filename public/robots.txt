@@ -1,20 +1,12 @@
-# Robots.txt for Dude Menswear
-
+# *
 User-agent: *
 Allow: /
+Disallow: /admin/
 Disallow: /api/
-Disallow: /auth/
-Disallow: /checkout
-Disallow: /account
-Disallow: /profile
-Disallow: /sso-callback
+Disallow: /account/
 
-# Sitemap
-Sitemap: https://dudemenswear.com/sitemap.xml
+# Host
+Host: https://dudemw.com
 
-# Crawl-delay for specific bots
-User-agent: Googlebot
-Crawl-delay: 0
-
-User-agent: Bingbot
-Crawl-delay: 1
+# Sitemaps
+Sitemap: https://dudemw.com/sitemap.xml

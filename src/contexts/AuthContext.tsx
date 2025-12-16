@@ -1,91 +1,81 @@
 'use client'
 
-import { createContext, useContext, ReactNode } from 'react'
-import { useUser, useClerk } from '@clerk/nextjs'
-
-interface Address {
-  id: string
-  name: string
-  phone: string
-  addressLine1: string
-  addressLine2?: string
-  city: string
-  state: string
-  pincode: string
-  isDefault: boolean
-}
-
-interface User {
-  id: string
-  name: string
-  email: string
-  phone?: string
-  addresses?: Address[]
-}
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import { User } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase/client'
 
 interface AuthContextType {
   user: User | null
-  isLoading: boolean
-  logout: () => Promise<void>
-  updateUser: (data: Partial<User>) => Promise<void>
+  loading: boolean
+  isLoading: boolean // Alias for loading
+  signOut: () => Promise<void>
+  logout: () => Promise<void> // Alias for signOut
+  signIn: (email: string, password: string) => Promise<{ error?: any }>
+  signUp: (email: string, password: string) => Promise<{ error?: any }>
+  updateUser?: (updates: Partial<User>) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const { user: clerkUser, isLoaded } = useUser()
-  const { signOut } = useClerk()
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+  // supabase client is imported directly
 
-  // Mock addresses for demo - in production, fetch from your backend
-  const mockAddresses: Address[] = clerkUser ? [
-    {
-      id: '1',
-      name: clerkUser.fullName || 'User',
-      phone: '+91 9876543210',
-      addressLine1: '123, Anna Nagar',
-      addressLine2: 'West Extension',
-      city: 'Chennai',
-      state: 'Tamil Nadu',
-      pincode: '600040',
-      isDefault: true
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+      setLoading(false)
     }
-  ] : []
 
-  // Transform Clerk user to our User interface
-  const user: User | null = clerkUser
-    ? {
-        id: clerkUser.id,
-        name: clerkUser.fullName || clerkUser.firstName || 'User',
-        email: clerkUser.primaryEmailAddress?.emailAddress || '',
-        phone: clerkUser.primaryPhoneNumber?.phoneNumber || undefined,
-        addresses: mockAddresses,
+    getUser()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setUser(session?.user ?? null)
+        setLoading(false)
       }
-    : null
+    )
 
-  const logout = async () => {
-    await signOut()
+    return () => subscription.unsubscribe()
+  }, [supabase.auth])
+
+  const signOut = async () => {
+    await supabase.auth.signOut()
   }
 
-  const updateUser = async (data: Partial<User>) => {
-    if (!clerkUser) return
+  const signIn = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+    return { error }
+  }
 
-    try {
-      // Update Clerk user
-      await clerkUser.update({
-        firstName: data.name?.split(' ')[0],
-        lastName: data.name?.split(' ').slice(1).join(' '),
-      })
-    } catch (error) {
-      console.error('Error updating user:', error)
-    }
+  const signUp = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    })
+    return { error }
+  }
+
+  const updateUser = async (updates: Partial<User>) => {
+    // Implement user update logic here
+    console.log('Update user:', updates)
   }
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        isLoading: !isLoaded,
-        logout,
+        loading,
+        isLoading: loading, // Alias
+        signOut,
+        logout: signOut, // Alias
+        signIn,
+        signUp,
         updateUser,
       }}
     >
@@ -94,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 }
 
-export function useAuth() {
+export const useAuth = () => {
   const context = useContext(AuthContext)
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider')

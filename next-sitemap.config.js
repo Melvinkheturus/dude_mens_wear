@@ -1,22 +1,21 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://dudemenswear.com',
+  siteUrl: process.env.SITE_URL || 'https://dudemw.com',
   generateRobotsTxt: true,
-  generateIndexSitemap: false,
   exclude: [
+    '/admin/*',
     '/api/*',
-    '/auth/*',
-    '/checkout',
-    '/account',
-    '/profile',
     '/sso-callback',
+    '/verify-otp',
+    '/reset-password',
+    '/forgot-password',
   ],
   robotsTxtOptions: {
     policies: [
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/auth/', '/checkout', '/account', '/profile', '/sso-callback'],
+        disallow: ['/admin/', '/api/', '/account/'],
       },
     ],
   },

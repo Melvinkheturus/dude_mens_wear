@@ -24,7 +24,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }))
 
   // TODO: Add dynamic product and collection pages
-  // Fetch from Medusa API and add to sitemap
+  // Fetch from custom API and add to sitemap
   // Example:
   // const products = await getProducts()
   // const productPages = products.map(product => ({

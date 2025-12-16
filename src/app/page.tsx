@@ -1,12 +1,5 @@
-import {
-  Hero,
-  NewDropSection,
-  BestsellerSection,
-  CategoryGrid,
-  InstagramFeed,
-  WhyDudeSection,
-} from "@/modules/homepage"
-import FloatingWhatsApp from "@/components/common/FloatingWhatsApp"
+import { DataDrivenHomepage } from "@/domains/homepage"
+import FloatingWhatsApp from "@/shared/media/FloatingWhatsApp"
 import { generateOrganizationSchema, generateWebsiteSchema } from "@/lib/utils/seo"
 
 export default function HomePage() {
@@ -25,12 +18,10 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
       />
       
-      <Hero />
-      <CategoryGrid />
-      <NewDropSection />
-      <BestsellerSection />
-      <InstagramFeed />
-      <WhyDudeSection />
+      {/* Data-Driven Homepage Content */}
+      <DataDrivenHomepage />
+      
+      {/* Keep floating WhatsApp for now */}
       <FloatingWhatsApp />
     </>
   )

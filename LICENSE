@@ -1,0 +1,101 @@
+============================================================
+SOFTWARE LICENSE AGREEMENT
+Dude Menswear – E-Commerce Platform
+============================================================
+
+Copyright © 2025 Dude Menswear. All rights reserved.
+
+This Software (the "E-Commerce Platform") including source code, 
+design assets, database structure, documentation, Medusa v2 backend 
+customizations, Clerk authentication module, custom Next.js storefront, 
+and all associated media (collectively the "Software") is the exclusive 
+property of Dude Menswear.
+
+============================================================
+1. GRANT OF LICENSE
+============================================================
+
+Dude Menswear grants you (the "Licensee") a limited, non-exclusive, 
+non-transferable license to use the Software solely for operating 
+the official Dude Menswear e-commerce website and its subdomains.
+
+============================================================
+2. OWNERSHIP & INTELLECTUAL PROPERTY
+============================================================
+
+All intellectual property rights, title, and interest in and to 
+the Software remain the exclusive property of Dude Menswear. 
+This license does not constitute a sale of the source code.
+
+============================================================
+3. PERMITTED USE
+============================================================
+
+You may:
+• Operate the Software on authorized domains
+• Make modifications for internal business use
+• Create backups of the Software
+• Use the Software for selling menswear products
+
+============================================================
+4. RESTRICTIONS
+============================================================
+
+You may NOT:
+• Resell, distribute, lease, or sublicense the Software
+• Use the Software for any other company or domain
+• Offer the platform as SaaS to third parties
+• Transfer this license to any third party
+
+============================================================
+5. THIRD-PARTY COMPONENTS
+============================================================
+
+This Software incorporates open-source components:
+• Medusa (https://medusajs.com) - MIT License
+• Next.js (https://nextjs.org) - MIT License
+• React (https://react.dev) - MIT License
+• Clerk (https://clerk.com) - Commercial License
+• Neon Database (https://neon.tech) - Commercial License
+• Tailwind CSS (https://tailwindcss.com) - MIT License
+
+Each component is subject to its own license terms.
+
+============================================================
+6. WARRANTY DISCLAIMER
+============================================================
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+============================================================
+7. LIMITATION OF LIABILITY
+============================================================
+
+IN NO EVENT SHALL DUDE MENSWEAR BE LIABLE FOR ANY SPECIAL, INCIDENTAL, 
+INDIRECT, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OF OR 
+INABILITY TO USE THIS SOFTWARE.
+
+============================================================
+8. TERMINATION
+============================================================
+
+This license terminates automatically if you fail to comply with 
+any terms. Upon termination, you must cease all use and destroy 
+all copies of the Software.
+
+============================================================
+9. GOVERNING LAW
+============================================================
+
+This Agreement shall be governed by the laws of India. Any disputes 
+shall be subject to the exclusive jurisdiction of the courts in 
+the registered location of Dude Menswear.
+
+============================================================
+
+Last Updated: December 5, 2025
+Version: 1.0.0
+
+============================================================

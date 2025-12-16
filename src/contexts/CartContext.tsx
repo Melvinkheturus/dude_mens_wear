@@ -1,100 +1,163 @@
 'use client'
 
-import { createContext, useContext, useState, ReactNode } from 'react'
+import React, { createContext, useContext, useReducer, ReactNode } from 'react'
 
-interface CartItem {
+export interface CartItem {
   id: string
-  title: string
+  productId: string
+  variantId?: string
+  name: string
   price: number
-  image: string
+  quantity: number
+  image?: string
   size?: string
   color?: string
-  quantity: number
-  variantKey: string // Unique key for variant (e.g., "product-1-M-Black")
-  isFBT?: boolean // Flag to identify FBT items
 }
 
+export interface ShippingAddress {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  address: string
+  city: string
+  state: string
+  zipCode: string
+  country: string
+}
+
+interface CartState {
+  items: CartItem[]
+  isOpen: boolean
+  shippingAddress?: ShippingAddress
+}
+
+type CartAction =
+  | { type: 'ADD_ITEM'; payload: CartItem }
+  | { type: 'REMOVE_ITEM'; payload: string }
+  | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
+  | { type: 'CLEAR_CART' }
+  | { type: 'TOGGLE_CART' }
+  | { type: 'SET_SHIPPING_ADDRESS'; payload: ShippingAddress }
+
 interface CartContextType {
-  cartItems: CartItem[]
-  addToCart: (item: Omit<CartItem, 'quantity'> & { quantity?: number }) => void
-  updateQuantity: (variantKey: string, quantity: number) => void
-  removeFromCart: (variantKey: string) => void
+  state: CartState
+  addItem: (item: CartItem) => void
+  removeItem: (id: string) => void
+  updateQuantity: (id: string, quantity: number) => void
   clearCart: () => void
-  clearFBTItems: () => void
-  totalPrice: number
-  itemCount: number
-  uniqueVariantCount: number
-  getItemByVariant: (variantKey: string) => CartItem | undefined
+  toggleCart: () => void
+  setShippingAddress: (address: ShippingAddress) => void
+  getTotalItems: () => number
+  getTotalPrice: () => number
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
-export function CartProvider({ children }: { children: ReactNode }) {
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
-
-  const addToCart = (item: Omit<CartItem, 'quantity'> & { quantity?: number }) => {
-    setCartItems((prev) => {
-      const existingIndex = prev.findIndex((cartItem) => cartItem.variantKey === item.variantKey)
-      
-      if (existingIndex !== -1) {
-        // Item exists, update quantity
-        const updated = [...prev]
-        updated[existingIndex] = {
-          ...updated[existingIndex],
-          quantity: updated[existingIndex].quantity + (item.quantity || 1),
+const cartReducer = (state: CartState, action: CartAction): CartState => {
+  switch (action.type) {
+    case 'ADD_ITEM':
+      const existingItem = state.items.find(item => item.id === action.payload.id)
+      if (existingItem) {
+        return {
+          ...state,
+          items: state.items.map(item =>
+            item.id === action.payload.id
+              ? { ...item, quantity: item.quantity + action.payload.quantity }
+              : item
+          )
         }
-        return updated
       }
-      
-      // New item, add to cart
-      return [...prev, { ...item, quantity: item.quantity || 1 }]
-    })
+      return {
+        ...state,
+        items: [...state.items, action.payload]
+      }
+    case 'REMOVE_ITEM':
+      return {
+        ...state,
+        items: state.items.filter(item => item.id !== action.payload)
+      }
+    case 'UPDATE_QUANTITY':
+      return {
+        ...state,
+        items: state.items.map(item =>
+          item.id === action.payload.id
+            ? { ...item, quantity: action.payload.quantity }
+            : item
+        )
+      }
+    case 'CLEAR_CART':
+      return {
+        ...state,
+        items: []
+      }
+    case 'TOGGLE_CART':
+      return {
+        ...state,
+        isOpen: !state.isOpen
+      }
+    case 'SET_SHIPPING_ADDRESS':
+      return {
+        ...state,
+        shippingAddress: action.payload
+      }
+    default:
+      return state
+  }
+}
+
+const initialState: CartState = {
+  items: [],
+  isOpen: false
+}
+
+export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [state, dispatch] = useReducer(cartReducer, initialState)
+
+  const addItem = (item: CartItem) => {
+    dispatch({ type: 'ADD_ITEM', payload: item })
   }
 
-  const updateQuantity = (variantKey: string, quantity: number) => {
-    setCartItems((prev) => {
-      if (quantity <= 0) {
-        return prev.filter((item) => item.variantKey !== variantKey)
-      }
-      return prev.map((item) =>
-        item.variantKey === variantKey ? { ...item, quantity } : item
-      )
-    })
+  const removeItem = (id: string) => {
+    dispatch({ type: 'REMOVE_ITEM', payload: id })
   }
 
-  const removeFromCart = (variantKey: string) => {
-    setCartItems((prev) => prev.filter((item) => item.variantKey !== variantKey))
+  const updateQuantity = (id: string, quantity: number) => {
+    dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity } })
   }
 
   const clearCart = () => {
-    setCartItems([])
+    dispatch({ type: 'CLEAR_CART' })
   }
 
-  const clearFBTItems = () => {
-    setCartItems((prev) => prev.filter((item) => !item.isFBT))
+  const toggleCart = () => {
+    dispatch({ type: 'TOGGLE_CART' })
   }
 
-  const getItemByVariant = (variantKey: string) => {
-    return cartItems.find((item) => item.variantKey === variantKey)
+  const setShippingAddress = (address: ShippingAddress) => {
+    dispatch({ type: 'SET_SHIPPING_ADDRESS', payload: address })
   }
 
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
-  const uniqueVariantCount = cartItems.length
+  const getTotalItems = () => {
+    return state.items.reduce((total, item) => total + item.quantity, 0)
+  }
+
+  const getTotalPrice = () => {
+    return state.items.reduce((total, item) => total + (item.price * item.quantity), 0)
+  }
 
   return (
     <CartContext.Provider
       value={{
-        cartItems,
-        addToCart,
+        state,
+        addItem,
+        removeItem,
         updateQuantity,
-        removeFromCart,
         clearCart,
-        clearFBTItems,
-        totalPrice,
-        itemCount,
-        uniqueVariantCount,
-        getItemByVariant,
+        toggleCart,
+        setShippingAddress,
+        getTotalItems,
+        getTotalPrice
       }}
     >
       {children}
@@ -102,7 +165,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   )
 }
 
-export function useCart() {
+export const useCart = () => {
   const context = useContext(CartContext)
   if (context === undefined) {
     throw new Error('useCart must be used within a CartProvider')

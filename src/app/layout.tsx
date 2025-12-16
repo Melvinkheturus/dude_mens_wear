@@ -2,13 +2,17 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { DemoCartProvider } from "@/contexts/DemoCartContext";
-import { ToastProvider } from "@/contexts/ToastContext";
+import { AuthProvider } from "@/domains/auth/context";
+import { CartProvider } from "@/domains/cart";
+import { ToastProvider } from "@/shared/feedback/ToastContext";
+import { initSentry } from "@/lib/monitoring/sentry";
 import "@/styles/globals.css";
-import Footer from "@/components/layout/Footer";
-import ConditionalNavbar from "@/components/layout/ConditionalNavbar";
-import PageTransition from "@/components/PageTransition";
+import Footer from "@/shared/layout/Footer";
+import ConditionalNavbar from "@/shared/layout/ConditionalNavbar";
+import PageTransition from "@/shared/feedback/PageTransition";
+
+// Initialize Sentry
+initSentry();
 
 const satoshi = localFont({
   src: [
@@ -107,21 +111,21 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <AuthProvider>
-        <DemoCartProvider>
+        <CartProvider>
           <ToastProvider>
             <html lang="en">
               <body
                 className={`${satoshi.variable} ${manrope.variable} antialiased flex flex-col min-h-screen`}
               >
                 <ConditionalNavbar />
-                <main className="flex-1 pt-[52px] lg:pt-[60px] [.pdp-page_&]:pt-0 [.pdp-page_&]:lg:pt-[60px]">
+                <main className="flex-1 pt-[52px] lg:pt-[60px] [.pdp-page_&]:pt-0 [.pdp-page_&]:lg:pt-[60px] [.admin-page_&]:pt-0">
                   <PageTransition>{children}</PageTransition>
                 </main>
                 <Footer />
               </body>
             </html>
           </ToastProvider>
-        </DemoCartProvider>
+        </CartProvider>
       </AuthProvider>
     </ClerkProvider>
   );

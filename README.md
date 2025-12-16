@@ -1,6 +1,6 @@
 # 🎨 Dude Menswear - Storefront (Next.js)
 
-Next.js storefront for Dude Menswear e-commerce platform.
+Next.js storefront for Dude Menswear e-commerce platform with custom backend.
 
 ## 📋 Overview
 
@@ -9,13 +9,13 @@ Modern, responsive e-commerce storefront built with:
 - TypeScript
 - Tailwind CSS 4
 - Clerk Authentication
-- Cloudinary CDN
+- Supabase Storage
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Node.js 20+
-- Running Medusa backend
+- Custom backend API
 
 ### Installation
 
@@ -29,10 +29,8 @@ Modern, responsive e-commerce storefront built with:
    cp .env.example .env.local
    ```
    Edit `.env.local` with your credentials:
-   - `NEXT_PUBLIC_MEDUSA_BACKEND_URL` - Backend URL
-   - `NEXT_PUBLIC_MEDUSA_PUBLISHABLE_API_KEY` - Medusa API key
    - Clerk authentication keys
-   - Cloudinary credentials
+   - Supabase credentials
    - Razorpay keys
 
 3. **Start development server**
@@ -66,7 +64,6 @@ dudemw-storefront/
 │   ├── contexts/           # React contexts
 │   ├── hooks/              # Custom hooks
 │   ├── lib/                # Utilities & integrations
-│   │   ├── medusa/         # Medusa API integration
 │   │   ├── utils/          # Utility functions
 │   │   └── monitoring/     # Error tracking
 │   ├── modules/            # Feature modules
@@ -95,7 +92,7 @@ dudemw-storefront/
 
 ### Technical Features
 - ✅ SEO optimized (structured data, meta tags)
-- ✅ Image optimization (Cloudinary)
+- ✅ Image optimization (Supabase Storage)
 - ✅ Error boundaries
 - ✅ Environment validation
 - ✅ Structured logging
@@ -107,11 +104,10 @@ dudemw-storefront/
 
 #### Required
 ```env
-NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://localhost:9000
-NEXT_PUBLIC_MEDUSA_PUBLISHABLE_API_KEY=pk_...
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
 CLERK_SECRET_KEY=sk_...
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=...
+NEXT_PUBLIC_SUPABASE_URL=https://...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 NEXT_PUBLIC_RAZORPAY_KEY_ID=rzp_...
 ```
 
@@ -211,14 +207,14 @@ npm run build
 - Verify API keys are correct
 
 ### Image Loading Issues
-- Check Cloudinary credentials
+- Check Supabase Storage configuration
 - Verify image URLs in database
 - Check browser network tab
 
 ## 📊 Performance
 
 ### Optimization
-- Images optimized via Cloudinary
+- Images optimized via Supabase Storage
 - Code splitting with Next.js
 - Lazy loading components
 - CDN for static assets
