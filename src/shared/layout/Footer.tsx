@@ -10,11 +10,6 @@ const authRoutes = ['/login', '/signup', '/forgot-password', '/reset-password', 
 export default function Footer() {
   const pathname = usePathname()
 
-  // Don't render footer on admin pages
-  if (pathname?.startsWith('/admin')) {
-    return null
-  }
-
   // Don't render footer on auth pages
   if (authRoutes.some(route => pathname?.startsWith(route))) {
     return null
