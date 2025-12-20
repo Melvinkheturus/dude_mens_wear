@@ -118,7 +118,7 @@ export default function RootLayout({
                 className={`${satoshi.variable} ${manrope.variable} antialiased flex flex-col min-h-screen`}
               >
                 <ConditionalNavbar />
-                <main className="flex-1 pt-[52px] lg:pt-[60px] [.pdp-page_&]:pt-0 [.pdp-page_&]:lg:pt-[60px] [.admin-page_&]:pt-0">
+                <main className="flex-1 pt-[52px] lg:pt-[60px] [.pdp-page_&]:pt-0 [.pdp-page_&]:lg:pt-[60px]">
                   <PageTransition>{children}</PageTransition>
                 </main>
                 <Footer />
